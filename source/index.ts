@@ -16,7 +16,13 @@ export const W_OK = 2 // constants?.W_OK
 export const X_OK = 1 // constants?.X_OK
 
 /** Returns a Promise that rejects with an error if the path is not accessible. */
-export function accessible(path: string, mode: number = F_OK): Promise<void> {
+export function accessible(
+	path: string | Array<string>,
+	mode: number = F_OK
+): Promise<void> {
+	if (Array.isArray(path)) {
+		return Promise.all(path.map((i) => accessible(i, mode))).then(() => {})
+	}
 	return new Promise((resolve, reject) => {
 		_access(path, mode, (err) => {
 			if (err) reject(err)
@@ -27,7 +33,7 @@ export function accessible(path: string, mode: number = F_OK): Promise<void> {
 
 /** Returns a Promise that resolves to a boolean indicating if the path is accessible or not. */
 export function isAccessible(
-	path: string,
+	path: string | Array<string>,
 	mode: number = F_OK
 ): Promise<boolean> {
 	return accessible(path, mode)

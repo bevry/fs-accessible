@@ -21,6 +21,32 @@ kava.suite('@bevry/fs-access', function (suite, test) {
 			equal(await isAccessible(dir, X_OK), true, 'dir is executable')
 
 			equal(
+				await isAccessible([file, dir]),
+				true,
+				'file and dir are both accessible via default'
+			)
+			equal(
+				await isAccessible([file, dir], F_OK),
+				true,
+				'file and dir are both accessible'
+			)
+			equal(
+				await isAccessible([file, dir], R_OK),
+				true,
+				'file and dir are both readable'
+			)
+			equal(
+				await isAccessible([file, dir], W_OK),
+				true,
+				'file and dir are both writable'
+			)
+			equal(
+				await isAccessible([file, dir], X_OK),
+				false,
+				'file and dir are not both executable'
+			)
+
+			equal(
 				await isAccessible('missing'),
 				false,
 				'missing is not accessible via default'
@@ -60,6 +86,10 @@ kava.suite('@bevry/fs-access', function (suite, test) {
 			await accessible(dir, R_OK)
 			await accessible(dir, W_OK)
 			await accessible(dir, X_OK)
+			await accessible([file, dir])
+			await accessible([file, dir], F_OK)
+			await accessible([file, dir], R_OK)
+			await accessible([file, dir], W_OK)
 		})()
 			.then(() => done())
 			.catch((err: any) => done(err))
@@ -67,6 +97,13 @@ kava.suite('@bevry/fs-access', function (suite, test) {
 	test('throw works as expected (part 2)', function (done) {
 		;(async function () {
 			await accessible(file, X_OK)
+		})()
+			.then(() => done(new Error('failed to fail')))
+			.catch(() => done())
+	})
+	test('throw works as expected (part 3)', function (done) {
+		;(async function () {
+			await accessible([file, dir], X_OK)
 		})()
 			.then(() => done(new Error('failed to fail')))
 			.catch(() => done())

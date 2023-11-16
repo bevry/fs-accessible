@@ -128,8 +128,3 @@ and licensed under:
 <ul><li><a href="http://spdx.org/licenses/Artistic-2.0.html">Artistic License 2.0</a></li></ul>
 
 <!-- /LICENSE -->
-
-
-```
-
-```
