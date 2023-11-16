@@ -9,31 +9,41 @@ const dir = '.'
 kava.suite('@bevry/fs-access', function (suite, test) {
 	test('boolean works as expected', function (done) {
 		;(async function () {
-			equal(await isAccessible(file, F_OK), true, 'file exists')
+			equal(await isAccessible(file), true, 'file is accessible via default')
+			equal(await isAccessible(file, F_OK), true, 'file is accessible')
 			equal(await isAccessible(file, R_OK), true, 'file is readable')
 			equal(await isAccessible(file, W_OK), true, 'file is writable')
 			equal(await isAccessible(file, X_OK), false, 'file is not executable')
+			equal(await isAccessible(dir), true, 'dir is accessible via default')
+			equal(await isAccessible(dir, F_OK), true, 'dir is accessible')
+			equal(await isAccessible(dir, R_OK), true, 'dir is readable')
+			equal(await isAccessible(dir, W_OK), true, 'dir is writable')
 			equal(await isAccessible(dir, X_OK), true, 'dir is executable')
 
 			equal(
-				await isAccessible(file + 'missing', F_OK),
+				await isAccessible('missing'),
 				false,
-				'missing file does not exist'
+				'missing is not accessible via default'
 			)
 			equal(
-				await isAccessible(file + 'missing', R_OK),
+				await isAccessible('missing', F_OK),
 				false,
-				'missing file is not readable'
+				'missing is not accessible'
 			)
 			equal(
-				await isAccessible(file + 'missing', W_OK),
+				await isAccessible('missing', R_OK),
 				false,
-				'missing file is not writable'
+				'missing is not readable'
 			)
 			equal(
-				await isAccessible(file + 'missing', X_OK),
+				await isAccessible('missing', W_OK),
 				false,
-				'missing file is not executable'
+				'missing is not writable'
+			)
+			equal(
+				await isAccessible('missing', X_OK),
+				false,
+				'missing is not executable'
 			)
 		})()
 			.then(() => done())
@@ -41,9 +51,14 @@ kava.suite('@bevry/fs-access', function (suite, test) {
 	})
 	test('throw works as expected (part 1)', function (done) {
 		;(async function () {
+			await accessible(file)
 			await accessible(file, F_OK)
 			await accessible(file, R_OK)
 			await accessible(file, W_OK)
+			await accessible(dir)
+			await accessible(dir, F_OK)
+			await accessible(dir, R_OK)
+			await accessible(dir, W_OK)
 			await accessible(dir, X_OK)
 		})()
 			.then(() => done())
