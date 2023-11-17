@@ -1,12 +1,14 @@
-import { equal } from 'assert-helpers'
+// external
+import { equal, deepEqual } from 'assert-helpers'
 import kava from 'kava'
 
-import { accessible, isAccessible, F_OK, R_OK, W_OK, X_OK } from './index.js'
+// local
+import accessible, { isAccessible, F_OK, R_OK, W_OK, X_OK } from './index.js'
 
 const file = 'README.md'
 const dir = '.'
 
-kava.suite('@bevry/fs-access', function (suite, test) {
+kava.suite('@bevry/fs-accessible', function (suite, test) {
 	test('boolean works as expected', function (done) {
 		;(async function () {
 			equal(await isAccessible(file), true, 'file is accessible via default')
@@ -14,37 +16,12 @@ kava.suite('@bevry/fs-access', function (suite, test) {
 			equal(await isAccessible(file, R_OK), true, 'file is readable')
 			equal(await isAccessible(file, W_OK), true, 'file is writable')
 			equal(await isAccessible(file, X_OK), false, 'file is not executable')
+
 			equal(await isAccessible(dir), true, 'dir is accessible via default')
 			equal(await isAccessible(dir, F_OK), true, 'dir is accessible')
 			equal(await isAccessible(dir, R_OK), true, 'dir is readable')
 			equal(await isAccessible(dir, W_OK), true, 'dir is writable')
 			equal(await isAccessible(dir, X_OK), true, 'dir is executable')
-
-			equal(
-				await isAccessible([file, dir]),
-				true,
-				'file and dir are both accessible via default'
-			)
-			equal(
-				await isAccessible([file, dir], F_OK),
-				true,
-				'file and dir are both accessible'
-			)
-			equal(
-				await isAccessible([file, dir], R_OK),
-				true,
-				'file and dir are both readable'
-			)
-			equal(
-				await isAccessible([file, dir], W_OK),
-				true,
-				'file and dir are both writable'
-			)
-			equal(
-				await isAccessible([file, dir], X_OK),
-				false,
-				'file and dir are not both executable'
-			)
 
 			equal(
 				await isAccessible('missing'),
@@ -70,6 +47,32 @@ kava.suite('@bevry/fs-access', function (suite, test) {
 				await isAccessible('missing', X_OK),
 				false,
 				'missing is not executable'
+			)
+
+			deepEqual(
+				await isAccessible([file, dir, 'missing']),
+				[true, true, false],
+				'accessible via default combination is as expected'
+			)
+			deepEqual(
+				await isAccessible([file, dir, 'missing'], F_OK),
+				[true, true, false],
+				'accessible combination is as expected'
+			)
+			deepEqual(
+				await isAccessible([file, dir, 'missing'], R_OK),
+				[true, true, false],
+				'readable combination is as expected'
+			)
+			deepEqual(
+				await isAccessible([file, dir, 'missing'], W_OK),
+				[true, true, false],
+				'writable combination is as expected'
+			)
+			deepEqual(
+				await isAccessible([file, dir, 'missing'], X_OK),
+				[false, true, false],
+				'executable combination is as expected'
 			)
 		})()
 			.then(() => done())

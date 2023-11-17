@@ -43,8 +43,8 @@ Check if a path is accessible
 <a href="https://npmjs.com" title="npm is a package manager for javascript"><h3>npm</h3></a>
 <ul>
 <li>Install: <code>npm install --save @bevry/fs-accessible</code></li>
-<li>Import: <code>import * as pkg from ('@bevry/fs-accessible')</code></li>
-<li>Require: <code>const pkg = require('@bevry/fs-accessible')</code></li>
+<li>Import: <code>import pkg from ('@bevry/fs-accessible')</code></li>
+<li>Require: <code>const pkg = require('@bevry/fs-accessible').default</code></li>
 </ul>
 
 <h3><a href="https://editions.bevry.me" title="Editions are the best way to produce and consume packages you care about.">Editions</a></h3>

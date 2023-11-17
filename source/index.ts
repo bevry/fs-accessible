@@ -30,12 +30,21 @@ export function accessible(
 		})
 	})
 }
+export default accessible
 
 /** Returns a Promise that resolves to a boolean indicating if the path is accessible or not. */
+export function isAccessible(path: string, mode?: number): Promise<boolean>
+export function isAccessible(
+	path: Array<string>,
+	mode?: number
+): Promise<Array<boolean>>
 export function isAccessible(
 	path: string | Array<string>,
 	mode: number = F_OK
-): Promise<boolean> {
+): Promise<boolean | Array<boolean>> {
+	if (Array.isArray(path)) {
+		return Promise.all(path.map((i) => isAccessible(i, mode)))
+	}
 	return accessible(path, mode)
 		.then(() => true)
 		.catch(() => false)
